@@ -17,7 +17,7 @@ public class RecommendationsRepository {
 
     public int getRandomTransactionAmount(UUID user){
         Integer result = jdbcTemplate.queryForObject(
-                "SELECT amount FROM transactions t WHERE t.user_id = ? LIMIT 1",
+                "SELECT amount FROM transactions t WHERE t.user_id = ? ORDER BY RAND() LIMIT 1",
                 Integer.class,
                 user);
         return result != null ? result : 0;
