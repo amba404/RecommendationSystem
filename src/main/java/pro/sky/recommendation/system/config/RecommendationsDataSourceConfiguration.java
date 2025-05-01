@@ -11,18 +11,18 @@ import javax.sql.DataSource;
 
 @Configuration
 public class RecommendationsDataSourceConfiguration {
-    @Bean(name = "recommendationsDataSource")
-    public DataSource recommendationsDataSource(@Value("${application.recommendations-db.url}") String recommendationsUrl) {
+    @Bean(name = "transactionsDataSource")
+    public DataSource transactionsDataSource(@Value("${application.transactions-db.url}") String transactionsUrl) {
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl(recommendationsUrl);
+        dataSource.setJdbcUrl(transactionsUrl);
         dataSource.setDriverClassName("org.h2.Driver");
         dataSource.setReadOnly(true);
         return dataSource;
     }
 
-    @Bean(name = "recommendationsJdbcTemplate")
-    public JdbcTemplate recommendationsJdbcTemplate(
-            @Qualifier("recommendationsDataSource") DataSource dataSource
+    @Bean(name = "transactionsJdbcTemplate")
+    public JdbcTemplate transactionsJdbcTemplate(
+            @Qualifier("transactionsDataSource") DataSource dataSource
     ) {
         return new JdbcTemplate(dataSource);
     }

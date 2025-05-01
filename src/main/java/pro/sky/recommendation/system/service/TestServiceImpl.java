@@ -1,22 +1,22 @@
 package pro.sky.recommendation.system.service;
 
 import org.springframework.stereotype.Service;
-import pro.sky.recommendation.system.repository.RecommendationsRepository;
+import pro.sky.recommendation.system.repository.TransactionsRepository;
 
 import java.util.UUID;
 
 @Service
 public class TestServiceImpl implements TestService {
 
-    private final RecommendationsRepository repository;
+    private final TransactionsRepository repository;
 
-    public TestServiceImpl(RecommendationsRepository repository) {
+    public TestServiceImpl(TransactionsRepository repository) {
         this.repository = repository;
     }
 
 
     @Override
-    public Integer test(UUID userId) {
+    public Integer getAmount(UUID userId) {
         return repository.getRandomTransactionAmount(userId);
     }
 }

@@ -24,8 +24,8 @@ public class TestController {
         return "Recommendation Service";
     }
 
-    @GetMapping("/recommendation/{userId}")
-    public Integer recommendation(@PathVariable UUID userId) {
-        return service.test(userId);
+    @GetMapping("/amount/{userId}")
+    public Integer getAmount(@PathVariable UUID userId) {
+        return service.getAmount(userId);
     }
 }
