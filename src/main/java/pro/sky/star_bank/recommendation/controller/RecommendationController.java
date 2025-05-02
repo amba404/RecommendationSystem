@@ -5,17 +5,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pro.sky.star_bank.recommendation.model.Recommendation;
+import pro.sky.star_bank.recommendation.service.RecommendationService;
 
-import java.util.ArrayList;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/recommendation")
 public class RecommendationController {
 
+    private final RecommendationService recommendationService;
+
+    public RecommendationController(RecommendationService recommendationService) {
+        this.recommendationService = recommendationService;
+    }
+
     @GetMapping("/{userId}")
-    public Optional<Recommendation> getRecommendation(@PathVariable(name = "userId") UUID userId) {
-        return Optional.of(new Recommendation(userId, new ArrayList<>()));
+    public Recommendation getRecommendation(@PathVariable(name = "userId") UUID userId) {
+        return new Recommendation(userId, recommendationService.getRecommendations(userId));
     }
 }
