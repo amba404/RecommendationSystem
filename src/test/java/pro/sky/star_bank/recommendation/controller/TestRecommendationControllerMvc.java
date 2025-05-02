@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pro.sky.star_bank.recommendation.model.Recommendation;
 
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.Mockito.when;
@@ -32,13 +31,13 @@ public class TestRecommendationControllerMvc {
     public void testGetRecommendation_Ok_EmptyList() throws Exception {
         UUID userId = UUID.randomUUID();
         Recommendation recommendation = new Recommendation(userId, new ArrayList<>());
-        when(recommendationController.getRecommendation(userId)).thenReturn(Optional.of(recommendation));
+        when(recommendationController.getRecommendation(userId)).thenReturn(recommendation);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/recommendation/{userId}", userId)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.user_id").value(userId.toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.zz").isEmpty());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.recommendations").isEmpty());
     }
 }
 
