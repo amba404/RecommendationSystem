@@ -5,7 +5,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pro.sky.star_bank.recommendation.model.RecommendedProduct;
-import pro.sky.star_bank.recommendation.repository.RecommendedProductRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,9 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RecommendationServiceImplTests {
-
-    @Autowired
-    RecommendedProductRepository recommendedProductRepository;
 
     @Autowired
     RecommendationServiceImpl recommendationService;
@@ -29,9 +25,12 @@ public class RecommendationServiceImplTests {
     })
     public void testRecommendations(UUID userId, UUID productId) {
         List<RecommendedProduct> recommendations = recommendationService.getRecommendations(userId);
-        RecommendedProduct product = recommendedProductRepository.findById(productId).orElse(null);
 
-        assertThat(recommendations).contains(product);
+        long count = recommendations.stream()
+                .filter(r -> r.getId().equals(productId))
+                .count();
+
+        assertThat(count).isEqualTo(1L);
 
     }
 }
