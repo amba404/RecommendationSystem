@@ -1,10 +1,12 @@
 package pro.sky.star_bank.recommendation.repository;
 
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -115,4 +117,7 @@ public class TransactionsRepository {
         return List.copyOf(uuids);
     }
 
+    public Optional<Boolean> checkTextRule(@NotEmpty String sql, UUID userId) {
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Boolean.class, userId));
+    }
 }
