@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
+import pro.sky.star_bank.recommendation.service.RecommendationRuleSet;
 
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class RecommendedProduct {
+public class RecommendedProduct implements RecommendationRuleSet {
 
     @Id
     @EqualsAndHashCode.Include
@@ -27,4 +28,9 @@ public class RecommendedProduct {
 
     @NotEmpty
     private String text;
+
+    @Override
+    public boolean checkForUser(UUID userId) {
+        return false;
+    }
 }

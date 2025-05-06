@@ -2,12 +2,12 @@ package pro.sky.star_bank.recommendation.model;
 
 import org.springframework.stereotype.Component;
 import pro.sky.star_bank.recommendation.repository.TransactionsRepository;
-import pro.sky.star_bank.recommendation.service.RecommendationRuleSetFix;
+import pro.sky.star_bank.recommendation.service.RecommendationRuleSet;
 
 import java.util.UUID;
 
 @Component
-public class RecommendedProductFix1 extends RecommendedProduct implements RecommendationRuleSetFix {
+public class RecommendedProductFix1 extends RecommendedProduct implements RecommendationRuleSet {
 
     private final TransactionsRepository transactionsRepository;
 
