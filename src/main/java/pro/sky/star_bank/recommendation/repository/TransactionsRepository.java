@@ -1,9 +1,14 @@
 package pro.sky.star_bank.recommendation.repository;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import pro.sky.star_bank.recommendation.model.enums.EnumCompareType;
+import pro.sky.star_bank.recommendation.model.enums.EnumProductType;
+import pro.sky.star_bank.recommendation.model.enums.EnumTransactionType;
 
 import java.util.List;
 import java.util.Optional;
@@ -119,5 +124,78 @@ public class TransactionsRepository {
 
     public Optional<Boolean> checkTextRule(@NotEmpty String sql, UUID userId) {
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Boolean.class, userId));
+    }
+
+    public Optional<Boolean> checkRuleUserOf(@NotNull UUID userId, @NotNull EnumProductType productType, boolean negate) {
+        return checkRuleUserOf(userId, productType, negate, 1);
+    }
+
+    public Optional<Boolean> checkRuleActiveUserOf(@NotNull UUID userId, @NotNull EnumProductType productType, boolean negate) {
+        return checkRuleUserOf(userId, productType, negate, 5);
+    }
+
+    public Optional<Boolean> checkRuleUserOf(@NotNull UUID userId, @NotNull EnumProductType productType, boolean negate, @Min(0) int count) {
+        String sqlTemplate = """
+                SELECT  %s (count(*) >= %d)
+                FROM
+                    transactions t
+                        INNER JOIN PRODUCTS p ON
+                        t.PRODUCT_ID = p.ID
+                WHERE
+                    t.user_id = ? and p.TYPE = ?
+                
+                """;
+
+        return Optional.ofNullable(jdbcTemplate.queryForObject(
+                sqlTemplate.formatted(negate ? "NOT" : "", count)
+                , Boolean.class
+                , userId
+                , productType.toString()));
+    }
+
+    public Optional<Boolean> checkRuleTransactionSumCompare(@NotNull UUID userId,
+                                                            @NotNull EnumProductType productType,
+                                                            @NotNull EnumTransactionType transactionType,
+                                                            @NotNull EnumCompareType comparator,
+                                                            @Min(0) int comparedValue,
+                                                            boolean negate) {
+        String sqlTemplate = """
+                SELECT %s (sum(t.AMOUNT) %s %d)
+                FROM
+                    transactions t
+                        INNER JOIN PRODUCTS p ON
+                        t.PRODUCT_ID = p.ID
+                WHERE
+                    t.user_id = ? and p.TYPE = ? and t.TYPE = ?
+                """;
+
+        return Optional.ofNullable(jdbcTemplate.queryForObject(
+                sqlTemplate.formatted(negate ? "NOT" : "", comparator, comparedValue)
+                , Boolean.class
+                , userId
+                , productType.toString()
+                , transactionType.toString()));
+    }
+
+    public Optional<Boolean> checkRuleTransactionSumCompareDepositWithdraw(@NotNull UUID userId,
+                                                                           @NotNull EnumProductType productType,
+                                                                           @NotNull EnumCompareType comparator,
+                                                                           boolean negate) {
+        String sqlTemplate = """
+                SELECT %s (SUM(CASE WHEN t.TYPE = 'DEPOSIT' THEN amount ELSE 0 END) %s
+                		SUM(CASE WHEN t.TYPE = 'WITHDRAW' THEN amount ELSE 0 END))
+                FROM
+                    transactions t
+                        INNER JOIN PRODUCTS p ON
+                        t.PRODUCT_ID = p.ID
+                WHERE
+                    t.user_id = ? and p.TYPE = ?
+                """;
+
+        return Optional.ofNullable(jdbcTemplate.queryForObject(
+                sqlTemplate.formatted(negate ? "NOT" : "", comparator)
+                , Boolean.class
+                , userId
+                , productType.toString()));
     }
 }
