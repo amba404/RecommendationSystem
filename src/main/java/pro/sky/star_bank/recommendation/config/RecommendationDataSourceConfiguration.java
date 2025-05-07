@@ -30,7 +30,7 @@ public class RecommendationDataSourceConfiguration {
 
     @Bean
     @Primary
-    @ConfigurationProperties("spring.datasource.recommendation")
+    @ConfigurationProperties(prefix = "recommendation.datasource")
     public DataSourceProperties recommendationDataSourceProperties() {
         return new DataSourceProperties();
     }

@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 @Configuration
 public class TransactionsDataSourceConfiguration {
     @Bean(name = "transactionsDataSource")
-    public DataSource transactionsDataSource(@Value("${spring.datasource.transactions.url}") String transactionsUrl) {
+    public DataSource transactionsDataSource(@Value("${transactions.datasource.url}") String transactionsUrl) {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(transactionsUrl);
         dataSource.setDriverClassName("org.h2.Driver");
