@@ -81,6 +81,11 @@
             <version>24.0.0</version>
             <scope>compile</scope>
         </dependency>
+		<dependency>
+			<groupId>io.hypersistence</groupId>
+			<artifactId>hypersistence-utils-hibernate-60</artifactId>
+			<version>3.9.4</version>
+		</dependency>
 	</dependencies>
 
 	<build>
