@@ -5,20 +5,19 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pro.sky.star_bank.recommendation.model.RuleSet;
 import pro.sky.star_bank.recommendation.repository.RecommendedProductRepository;
 import pro.sky.star_bank.recommendation.repository.RuleSetRepository;
+import pro.sky.star_bank.recommendation.repository.TransactionsRepository;
 import pro.sky.star_bank.recommendation.service.RuleService;
 
 import java.util.List;
@@ -31,17 +30,14 @@ class TestRuleControllerMvc {
     @Autowired
     private MockMvc mockMvc;
 
-    @InjectMocks
-    RuleController ruleController;
-
     @MockitoBean
     RuleSetRepository rulesetRepository;
 
     @MockitoBean
     RecommendedProductRepository productRepository;
 
-    @MockitoSpyBean
-    RuleService ruleService;
+    @MockitoBean
+    TransactionsRepository transactionsRepository;
 
     private final static UUID UUID_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
 

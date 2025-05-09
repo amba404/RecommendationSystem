@@ -9,7 +9,10 @@ public interface RuleService {
 
     RuleSet addRuleSet(RuleSet ruleSet);
 
-    List<RuleSet> getAll();
+    List<RuleSet> findAll();
 
     void deleteRuleSet(UUID id);
+
+    boolean checkForUser(UUID userId, RuleSet ruleSet);
+
 }

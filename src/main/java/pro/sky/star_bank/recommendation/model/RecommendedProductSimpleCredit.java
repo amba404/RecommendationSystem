@@ -7,11 +7,11 @@ import pro.sky.star_bank.recommendation.service.RecommendationRuleSet;
 import java.util.UUID;
 
 @Component
-public class RecommendedProductFix3 extends RecommendedProduct implements RecommendationRuleSet {
+public class RecommendedProductSimpleCredit extends RecommendedProduct implements RecommendationRuleSet {
 
     private final TransactionsRepository transactionsRepository;
 
-    public RecommendedProductFix3(TransactionsRepository transactionsRepository) {
+    public RecommendedProductSimpleCredit(TransactionsRepository transactionsRepository) {
         this.transactionsRepository = transactionsRepository;
         this.setId(UUID.fromString("ab138afb-f3ba-4a93-b74f-0fcee86d447f"));
         this.setName("Простой кредит");
@@ -27,41 +27,6 @@ public class RecommendedProductFix3 extends RecommendedProduct implements Recomm
     @Override
     public boolean checkForUser(UUID userId) {
 
-        String sql1 = """
-                SELECT count(*) = 0
-                FROM
-                    transactions t
-                        INNER JOIN PRODUCTS p ON
-                        t.PRODUCT_ID = p.ID
-                WHERE
-                    t.user_id = ? and p.TYPE = 'CREDIT'
-                """;
-
-        String sql2 = """
-                SELECT SUM(CASE WHEN t.TYPE = 'DEPOSIT' THEN amount ELSE 0 END) >
-                		SUM(CASE WHEN t.TYPE = 'WITHDRAW' THEN amount ELSE 0 END)
-                FROM
-                    transactions t
-                        INNER JOIN PRODUCTS p ON
-                        t.PRODUCT_ID = p.ID
-                WHERE
-                    t.user_id = ? and p.TYPE = 'DEBIT'
-                """;
-
-        String sql3 = """
-                SELECT sum(t.AMOUNT) > 100000
-                FROM
-                    transactions t
-                        INNER JOIN PRODUCTS p ON
-                        t.PRODUCT_ID = p.ID
-                WHERE
-                    t.user_id = ? and p.TYPE = 'DEBIT' and t.TYPE = 'WITHDRAW'
-                """;
-
-        return transactionsRepository.checkTextRule(sql1, userId).orElse(false)
-                &&
-                transactionsRepository.checkTextRule(sql2, userId).orElse(false)
-                &&
-                transactionsRepository.checkTextRule(sql3, userId).orElse(false);
+        return transactionsRepository.checkForUserSimpleCredit(userId);
     }
 }

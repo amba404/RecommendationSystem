@@ -10,15 +10,15 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class RecommendedProductFix2Test {
+class RecommendedProductInvest500Test {
 
     @Autowired
-    RecommendedProductFix2 recommendedProduct;
+    RecommendedProductInvest500 recommendedProduct;
 
     @ParameterizedTest
     @CsvSource({
             "00000000-0000-0000-0000-000000000000, false",
-            "d4a4d619-9a0c-4fc5-b0cb-76c49409546b, true"
+            "cd515076-5d8a-44be-930e-8d4fcb79f42d, true"
     })
     void checkForUser(UUID userId, boolean expected) {
         boolean result = recommendedProduct.checkForUser(userId);

@@ -10,10 +10,10 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class RecommendedProductFix3Test {
+class RecommendedProductSimpleCreditTest {
 
     @Autowired
-    RecommendedProductFix3 recommendedProduct;
+    RecommendedProductSimpleCredit recommendedProduct;
 
     @ParameterizedTest
     @CsvSource({
