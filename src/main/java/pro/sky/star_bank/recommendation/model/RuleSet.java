@@ -9,7 +9,6 @@ import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
-import pro.sky.star_bank.recommendation.service.RecommendationRuleSet;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,7 +21,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class RuleSet implements RecommendationRuleSet {
+public class RuleSet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,11 +39,6 @@ public class RuleSet implements RecommendationRuleSet {
     @JsonProperty("rule")
     @NotNull
     private List<Rule> rules;
-
-    @Override
-    public boolean checkForUser(UUID userId) {
-        return false;
-    }
 
     public void assertValid() {
         if (rules == null) {

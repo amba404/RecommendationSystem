@@ -2,39 +2,38 @@ package pro.sky.star_bank.recommendation.service;
 
 import org.springframework.stereotype.Service;
 import pro.sky.star_bank.recommendation.model.RecommendedProduct;
-import pro.sky.star_bank.recommendation.model.RecommendedProductFix1;
-import pro.sky.star_bank.recommendation.model.RecommendedProductFix2;
-import pro.sky.star_bank.recommendation.model.RecommendedProductFix3;
-import pro.sky.star_bank.recommendation.repository.RecommendedProductRepository;
-import pro.sky.star_bank.recommendation.repository.TransactionsRepository;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class RecommendationServiceImpl implements RecommendationService {
 
-    private final RecommendedProductRepository recommendedProductRepository;
+    private final RuleService ruleService;
 
-    private final TransactionsRepository transactionsRepository;
+    private final List<RecommendationRuleSet> recommendationsFix;
 
-    private final List<RecommendedProduct> recommendationsFix = new ArrayList<>();
-
-    public RecommendationServiceImpl(RecommendedProductRepository recommendedProductRepository, TransactionsRepository transactionsRepository) {
-        this.recommendedProductRepository = recommendedProductRepository;
-        this.transactionsRepository = transactionsRepository;
-
-        this.recommendationsFix.add(new RecommendedProductFix1(transactionsRepository));
-        this.recommendationsFix.add(new RecommendedProductFix2(transactionsRepository));
-        this.recommendationsFix.add(new RecommendedProductFix3(transactionsRepository));
-
+    public RecommendationServiceImpl(RuleService ruleService, List<RecommendationRuleSet> recommendationsFix) {
+        this.ruleService = ruleService;
+        this.recommendationsFix = recommendationsFix;
     }
 
     @Override
     public List<RecommendedProduct> getRecommendations(UUID userId) {
-        return recommendationsFix.stream()
+
+        HashSet<RecommendedProduct> recommendations = new HashSet<>();
+
+        recommendationsFix.stream()
+                .parallel()
                 .filter(r -> r.checkForUser(userId))
-                .toList();
+                .forEach(r -> recommendations.add((RecommendedProduct) r));
+
+        ruleService.findAll().stream()
+                .parallel()
+                .filter(r -> ruleService.checkForUser(userId, r))
+                .forEach(r -> recommendations.add(r.getProduct()));
+
+        return List.copyOf(recommendations);
     }
 }

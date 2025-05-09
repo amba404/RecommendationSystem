@@ -25,7 +25,7 @@ public class RuleController {
 
     @GetMapping
     public List<RuleSet> getAllRuleSets() {
-        return ruleService.getAll();
+        return ruleService.findAll();
     }
 
     @DeleteMapping("/{id}")

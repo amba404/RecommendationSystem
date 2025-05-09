@@ -7,11 +7,11 @@ import pro.sky.star_bank.recommendation.service.RecommendationRuleSet;
 import java.util.UUID;
 
 @Component
-public class RecommendedProductFix2 extends RecommendedProduct implements RecommendationRuleSet {
+public class RecommendedProductTopSaving extends RecommendedProduct implements RecommendationRuleSet {
 
     private final TransactionsRepository transactionsRepository;
 
-    public RecommendedProductFix2(TransactionsRepository transactionsRepository) {
+    public RecommendedProductTopSaving(TransactionsRepository transactionsRepository) {
         this.transactionsRepository = transactionsRepository;
         this.setId(UUID.fromString("59efc529-2fff-41af-baff-90ccd7402925"));
         this.setName("Top Saving");
@@ -26,56 +26,7 @@ public class RecommendedProductFix2 extends RecommendedProduct implements Recomm
     @Override
     public boolean checkForUser(UUID userId) {
 
-        String sql1 = """
-                SELECT count(*) > 0
-                FROM
-                    transactions t
-                        INNER JOIN PRODUCTS p ON
-                        t.PRODUCT_ID = p.ID
-                WHERE
-                    t.user_id = ? and p.TYPE = 'DEBIT'
-                """;
-
-        String sql2 = """
-                SELECT sum(t.AMOUNT) >= 50000
-                FROM
-                    transactions t
-                        INNER JOIN PRODUCTS p ON
-                        t.PRODUCT_ID = p.ID
-                WHERE
-                    t.user_id = ? and p.TYPE = 'DEBIT' and t.TYPE = 'DEPOSIT'
-                """;
-
-        String sql3 = """
-                SELECT sum(t.AMOUNT) >= 50000
-                FROM
-                    transactions t
-                        INNER JOIN PRODUCTS p ON
-                        t.PRODUCT_ID = p.ID
-                WHERE
-                    t.user_id = ? and p.TYPE = 'SAVING' and t.TYPE = 'DEPOSIT'
-                """;
-
-
-        String sql4 = """
-                SELECT SUM(CASE WHEN t.TYPE = 'DEPOSIT' THEN amount ELSE 0 END) >
-                		SUM(CASE WHEN t.TYPE = 'WITHDRAW' THEN amount ELSE 0 END)
-                FROM
-                    transactions t
-                        INNER JOIN PRODUCTS p ON
-                        t.PRODUCT_ID = p.ID
-                WHERE
-                    t.user_id = ? and p.TYPE = 'DEBIT'
-                """;
-
-        return transactionsRepository.checkTextRule(sql1, userId).orElse(false)
-                &&
-                (
-                        transactionsRepository.checkTextRule(sql2, userId).orElse(false)
-                                ||
-                                transactionsRepository.checkTextRule(sql3, userId).orElse(false)
-                )
-                &&
-                transactionsRepository.checkTextRule(sql4, userId).orElse(false);
+        return transactionsRepository.checkForUserTopSaving(userId);
     }
+
 }
