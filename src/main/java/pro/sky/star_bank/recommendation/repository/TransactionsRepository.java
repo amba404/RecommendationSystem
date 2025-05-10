@@ -3,11 +3,12 @@ package pro.sky.star_bank.recommendation.repository;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import pro.sky.star_bank.recommendation.model.Rule;
-import pro.sky.star_bank.recommendation.model.RuleSet;
 import pro.sky.star_bank.recommendation.model.enums.EnumCompareType;
 import pro.sky.star_bank.recommendation.model.enums.EnumProductType;
 import pro.sky.star_bank.recommendation.model.enums.EnumTransactionType;
@@ -20,6 +21,8 @@ import java.util.UUID;
 public class TransactionsRepository {
 
     private final JdbcTemplate jdbcTemplate;
+
+    private final Logger logger = LoggerFactory.getLogger(TransactionsRepository.class);
 
     public TransactionsRepository(@Qualifier("transactionsJdbcTemplate") JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -291,38 +294,18 @@ public class TransactionsRepository {
     }
 
     /**
-     * Проверяет выполнение динамического правила "Используется продукт с типом PRODUCT_TYPE хотя бы раз"
-     * @param userId id пользователя
-     * @param productType тип продукта
-     * @param negate true - инверсия результата
-     * @return True | false, или Null
-     */
-    public Optional<Boolean> checkRuleUserOf(@NotNull UUID userId, @NotNull EnumProductType productType, boolean negate) {
-        return checkRuleUserOf(userId, productType, negate, 1);
-    }
-
-    /**
-     * Проверяет выполнение динамического правила "Активно Используется продукт с типом PRODUCT_TYPE (хотя бы 5 раз)"
-     * @param userId id пользователя
-     * @param productType тип продукта
-     * @param negate true - инверсия результата
-     * @return True | false, или Null
-     */
-    public Optional<Boolean> checkRuleActiveUserOf(@NotNull UUID userId, @NotNull EnumProductType productType, boolean negate) {
-        return checkRuleUserOf(userId, productType, negate, 5);
-    }
-
-    /**
      * Проверяет выполнение динамического правила "Используется продукт с типом PRODUCT_TYPE заданное количество раз"
      * @param userId id пользователя
      * @param productType тип продукта
-     * @param negate true - инверсия результата
      * @param count количество раз
      * @return True | false, или Null
      */
-    public Optional<Boolean> checkRuleUserOf(@NotNull UUID userId, @NotNull EnumProductType productType, boolean negate, @Min(0) int count) {
+    @Cacheable(value = "UserOf", key = "{#userId, #productType, #count}")
+    public Optional<Boolean> checkRuleUserOf(@NotNull UUID userId, @NotNull EnumProductType productType, @Min(0) int count) {
+        logger.info("checkRuleUserOf");
+
         String sqlTemplate = """
-                SELECT  %s (count(*) >= %d)
+                SELECT  count(*) >= ? as cnd
                 FROM
                     transactions t
                         INNER JOIN PRODUCTS p ON
@@ -333,8 +316,9 @@ public class TransactionsRepository {
                 """;
 
         return Optional.ofNullable(jdbcTemplate.queryForObject(
-                sqlTemplate.formatted(negate ? "NOT" : "", count)
+                sqlTemplate
                 , Boolean.class
+                , count
                 , userId
                 , productType.toString()));
     }
@@ -346,17 +330,18 @@ public class TransactionsRepository {
      * @param transactionType тип операции
      * @param comparator операция сравнения
      * @param comparedValue сравниваемое значение
-     * @param negate true - инверсия результата
      * @return True | false, или Null
      */
+    @Cacheable(value = "TransactionSumCompare", key = "{#userId, #productType, #transactionType, #comparator, #comparedValue}")
     public Optional<Boolean> checkRuleTransactionSumCompare(@NotNull UUID userId,
                                                             @NotNull EnumProductType productType,
                                                             @NotNull EnumTransactionType transactionType,
                                                             @NotNull EnumCompareType comparator,
-                                                            @Min(0) int comparedValue,
-                                                            boolean negate) {
+                                                            @Min(0) int comparedValue) {
+        logger.info("checkRuleTransactionSumCompare");
+
         String sqlTemplate = """
-                SELECT %s (sum(t.AMOUNT) %s %d)
+                SELECT (sum(t.AMOUNT) %s %d)
                 FROM
                     transactions t
                         INNER JOIN PRODUCTS p ON
@@ -366,7 +351,7 @@ public class TransactionsRepository {
                 """;
 
         return Optional.ofNullable(jdbcTemplate.queryForObject(
-                sqlTemplate.formatted(negate ? "NOT" : "", comparator, comparedValue)
+                sqlTemplate.formatted(comparator, comparedValue)
                 , Boolean.class
                 , userId
                 , productType.toString()
@@ -378,15 +363,16 @@ public class TransactionsRepository {
      * @param userId id пользователя
      * @param productType тип продукта
      * @param comparator операция сравнения
-     * @param negate true - инверсия результата
      * @return True | false, или Null
      */
+    @Cacheable(value = "TransactionSumCompareDepositWithdraw", key = "{#userId, #productType, #comparator}")
     public Optional<Boolean> checkRuleTransactionSumCompareDepositWithdraw(@NotNull UUID userId,
                                                                            @NotNull EnumProductType productType,
-                                                                           @NotNull EnumCompareType comparator,
-                                                                           boolean negate) {
+                                                                           @NotNull EnumCompareType comparator) {
+        logger.info("checkRuleTransactionSumCompareDepositWithdraw");
+
         String sqlTemplate = """
-                SELECT %s (SUM(CASE WHEN t.TYPE = 'DEPOSIT' THEN amount ELSE 0 END) %s
+                SELECT (SUM(CASE WHEN t.TYPE = 'DEPOSIT' THEN amount ELSE 0 END) %s
                 		SUM(CASE WHEN t.TYPE = 'WITHDRAW' THEN amount ELSE 0 END))
                 FROM
                     transactions t
@@ -397,48 +383,9 @@ public class TransactionsRepository {
                 """;
 
         return Optional.ofNullable(jdbcTemplate.queryForObject(
-                sqlTemplate.formatted(negate ? "NOT" : "", comparator)
+                sqlTemplate.formatted(comparator)
                 , Boolean.class
                 , userId
                 , productType.toString()));
     }
-
-    /**
-     * Проверяет выполнение Набора правил рекомендации пользователя
-     * @param userId идентификатор пользователя
-     * @param ruleSet набор правил рекомендации
-     * @return True | false
-     */
-    public boolean checkForUser(@NotNull UUID userId, @NotNull RuleSet ruleSet) {
-        List<Rule> rules = ruleSet.getRules();
-        boolean result = !rules.isEmpty();
-
-        for (Rule rule : rules) {
-            result = result && checkForUser(userId, rule);
-            if (!result) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Проверяет выполнение правила рекомендации для пользователя
-     * @param userId идентификатор пользователя
-     * @param rule правило рекомендации
-     * @return True | false
-     */
-    public boolean checkForUser(@NotNull UUID userId, @NotNull Rule rule) {
-        Optional<Boolean> result = switch (rule.getQueryType()) {
-            case USER_OF -> checkRuleUserOf(userId, rule.getProductType(), rule.isNegate());
-            case ACTIVE_USER_OF -> checkRuleActiveUserOf(userId, rule.getProductType(), rule.isNegate());
-            case TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW ->
-                    checkRuleTransactionSumCompareDepositWithdraw(userId, rule.getProductType(), rule.getCompareType(), rule.isNegate());
-            case TRANSACTION_SUM_COMPARE ->
-                    checkRuleTransactionSumCompare(userId, rule.getProductType(), rule.getTransactionType(), rule.getCompareType(), rule.getCompareValue(), rule.isNegate());
-        };
-        return result.orElse(false);
-    }
-
 }

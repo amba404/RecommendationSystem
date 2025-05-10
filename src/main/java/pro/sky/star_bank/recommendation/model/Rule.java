@@ -22,6 +22,9 @@ import java.util.List;
 @EqualsAndHashCode
 public class Rule {
 
+    public static int CNT_USER_OF = 1;
+    public static int CNT_ACTIVE_USER_OF = 5;
+
     public enum EnumQueryType {
         USER_OF,
         ACTIVE_USER_OF,
