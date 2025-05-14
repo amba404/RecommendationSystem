@@ -5,3 +5,5 @@ databaseChangeLog:
       file: liquibase/scripts/09-01-changelog.sql
   - include:
       file: liquibase/scripts/09-02-changelog.sql
+  - include:
+      file: liquibase/scripts/2025-05-14-01-changelog.sql

@@ -1,5 +1,6 @@
 package pro.sky.star_bank.recommendation.service;
 
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import pro.sky.star_bank.recommendation.model.Rule;
@@ -13,19 +14,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class RuleServiceImpl implements RuleService {
 
     private final RuleSetRepository rulesetRepository;
-
     private final TransactionsRepository transactionsRepository;
-
     private final RecommendedProductRepository productRepository;
-
-    public RuleServiceImpl(RuleSetRepository rulesetRepository, TransactionsRepository transactionsRepository, RecommendedProductRepository productRepository) {
-        this.rulesetRepository = rulesetRepository;
-        this.transactionsRepository = transactionsRepository;
-        this.productRepository = productRepository;
-    }
+    private final RuleStatService ruleStatService;
 
     /**
      * Проверяет выполнение Набора правил рекомендации пользователя
@@ -45,6 +40,8 @@ public class RuleServiceImpl implements RuleService {
                 return false;
             }
         }
+
+        ruleStatService.incrementCount(ruleSet.getId());
 
         return true;
     }

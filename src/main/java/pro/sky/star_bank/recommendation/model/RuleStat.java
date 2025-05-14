@@ -1,0 +1,35 @@
+package pro.sky.star_bank.recommendation.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.UUID;
+
+
+@Entity
+@Table(name = "rule_stat")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class RuleStat {
+
+    @EqualsAndHashCode.Include
+    @Id
+    @JsonProperty("rule_id")
+    private UUID id;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @MapsId
+    @JsonIgnore
+    private RuleSet rule;
+
+    @Column(name = "rule_count")
+    @JsonProperty("count")
+    private int rulesetCount;
+
+}
