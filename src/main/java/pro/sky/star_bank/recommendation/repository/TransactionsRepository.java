@@ -7,8 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import pro.sky.star_bank.recommendation.model.TransactionsUser;
 import pro.sky.star_bank.recommendation.model.enums.EnumCompareType;
 import pro.sky.star_bank.recommendation.model.enums.EnumProductType;
 import pro.sky.star_bank.recommendation.model.enums.EnumTransactionType;
@@ -387,5 +390,23 @@ public class TransactionsRepository {
                 , Boolean.class
                 , userId
                 , productType.toString()));
+    }
+
+    public Optional<TransactionsUser> getUserByUserName(@NotNull String userName) {
+        RowMapper<TransactionsUser> TransactionUserRowMapper = (rs, rowNum) ->
+                new TransactionsUser(UUID.fromString(rs.getString("ID")),
+                        rs.getString("FIRST_NAME"),
+                        rs.getString("LAST_NAME"),
+                        rs.getString("USERNAME"));
+
+        TransactionsUser user;
+        try {
+            user = jdbcTemplate.queryForObject("select * from users where username = ? limit 1",
+                    TransactionUserRowMapper,
+                    userName);
+        } catch (EmptyResultDataAccessException e) {
+            user = null;
+        }
+        return Optional.ofNullable(user);
     }
 }
