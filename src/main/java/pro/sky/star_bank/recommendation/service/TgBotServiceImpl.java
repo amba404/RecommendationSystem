@@ -17,7 +17,7 @@ public class TgBotServiceImpl implements TgBotService{
 
     @Override
     public String hello() {
-        return "Привет! Справка по использованию бота: /recommend <username>";
+        return "Привет! Справка по использованию бота: /recommend username";
     }
 
     @Override
