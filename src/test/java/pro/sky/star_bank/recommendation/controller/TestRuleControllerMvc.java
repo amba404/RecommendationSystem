@@ -15,15 +15,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pro.sky.star_bank.recommendation.model.RuleSet;
+import pro.sky.star_bank.recommendation.model.RuleStat;
 import pro.sky.star_bank.recommendation.repository.RecommendedProductRepository;
 import pro.sky.star_bank.recommendation.repository.RuleSetRepository;
+import pro.sky.star_bank.recommendation.repository.RuleStatRepository;
 import pro.sky.star_bank.recommendation.repository.TransactionsRepository;
 import pro.sky.star_bank.recommendation.service.RuleService;
+import pro.sky.star_bank.recommendation.service.RuleStatService;
 
 import java.util.List;
 import java.util.UUID;
 
-@WebMvcTest(controllers = {RuleController.class, RuleService.class})
+@WebMvcTest(controllers = {RuleController.class, RuleService.class, RuleStatService.class})
 @ExtendWith(MockitoExtension.class)
 class TestRuleControllerMvc {
 
@@ -32,6 +35,9 @@ class TestRuleControllerMvc {
 
     @MockitoBean
     RuleSetRepository rulesetRepository;
+
+    @MockitoBean
+    RuleStatRepository ruleStatRepository;
 
     @MockitoBean
     RecommendedProductRepository productRepository;
@@ -59,6 +65,7 @@ class TestRuleControllerMvc {
 
     private static RuleSet ruleSet;
     private static JSONObject jsonObject;
+    private static RuleStat ruleStat;
 
     @BeforeAll
     static void init() throws Exception {
@@ -66,6 +73,10 @@ class TestRuleControllerMvc {
 
         ruleSet = mapper.readValue(jsonRequest, RuleSet.class);
         ruleSet.setId(UUID_ID);
+
+        ruleStat = new RuleStat();
+        ruleStat.setId(UUID_ID);
+        ruleStat.setRulesetCount(10);
 
         jsonObject = new JSONObject(jsonRequest);
 
@@ -109,5 +120,18 @@ class TestRuleControllerMvc {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    void getRuleStats() throws Exception {
+        Mockito.when(ruleStatRepository.findAll()).thenReturn(List.of(ruleStat));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/rule/stats")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.stats").isNotEmpty());
     }
 }
