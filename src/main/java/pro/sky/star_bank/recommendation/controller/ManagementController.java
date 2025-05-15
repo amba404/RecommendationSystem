@@ -1,11 +1,11 @@
 package pro.sky.star_bank.recommendation.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pro.sky.star_bank.recommendation.service.ManagementService;
 
 @RestController
@@ -14,10 +14,23 @@ import pro.sky.star_bank.recommendation.service.ManagementService;
 public class ManagementController {
 
     private final ManagementService managementService;
+    private final BuildProperties buildProperties;
 
     @PostMapping("/clear-caches")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void clearCache() {
         managementService.clearCaches();
+    }
+
+    @GetMapping("/info")
+    public Info getInfo() {
+        return new Info(buildProperties.getName(), buildProperties.getVersion());
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Info {
+        private String name;
+        private String version;
     }
 }
