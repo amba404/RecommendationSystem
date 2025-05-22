@@ -1,0 +1,222 @@
+openapi: 3.1.0
+info:
+  title: Star Bank Recommendation API
+  description: API for Star Bank Recommendation for Credit Products
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+tags:
+  - name: Management Controller
+    description: Контроллер служебного функционала
+  - name: Rule Controller
+    description: Контроллер сервиса для работы с динамическими правилами рекомендаций
+  - name: Recommendation Controller
+    description: Контроллер сервиса рекомендаций. Выдает рекомендованные банковские продукты для заданного пользователя
+paths:
+  /rule:
+    get:
+      tags:
+        - Rule Controller
+      summary: Список всех правил
+      description: Получает список всех динамических наборов правил рекомендаций
+      operationId: getAllRuleSets
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RuleSet'
+    post:
+      tags:
+        - Rule Controller
+      summary: Создает набор правил
+      description: Создает новый динамический набор правил рекомендаций. Создает/обновляет информацию по рекомендуемому продукту
+      operationId: createRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleSet'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RuleSet'
+  /management/clear-caches:
+    post:
+      tags:
+        - Management Controller
+      summary: Очистка кэшей
+      description: Очищает все кэши запросов к БД транзакций
+      operationId: clearCache
+      responses:
+        '204':
+          description: No Content
+  /rule/stats:
+    get:
+      tags:
+        - Rule Controller
+      summary: Возвращает статистику по правилам
+      description: Возвращает статистику по срабатыванию правил
+      operationId: getStats
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/RuleStatReturn'
+  /recommendation/{userId}:
+    get:
+      tags:
+        - Recommendation Controller
+      summary: Выдача рекомендаций
+      description: Список рекомендованных продуктов для заданного пользователя
+      operationId: getRecommendation
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Recommendation'
+  /management/info:
+    get:
+      tags:
+        - Management Controller
+      summary: Информация о сервисе
+      description: Предоставляет информацию о сервисе
+      operationId: getInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Info'
+  /rule/{id}:
+    delete:
+      tags:
+        - Rule Controller
+      summary: Удаляет набор правил
+      description: Удаляет динамический набор правил рекомендаций по id
+      operationId: deleteRuleSet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: No Content
+components:
+  schemas:
+    RecommendedProduct:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        text:
+          type: string
+      required:
+        - name
+        - text
+    Rule:
+      type: object
+      description: Сущность правила. Входит в набор правил для рекомендаций.
+      properties:
+        negate:
+          type: boolean
+          description: Флаг отрицания правила. Результат инвертируется
+        arguments:
+          type: array
+          description: Список аргументов правила. В зависимости от типа правила, количество аргументов может отличаться. От 1 до 4 аргументов (ТипПродукта|ТипТранзакции|СпособСравнения|Значение), заданных строкой
+          enum:
+            - DEBIT|CREDIT
+            - DEPOSIT|WITHDRAW
+            - '>|<|>=|<=|='
+            - Integer(>=0)
+          items:
+            type: string
+        query:
+          type: string
+          description: Тип запроса правила
+          enum:
+            - USER_OF
+            - ACTIVE_USER_OF
+            - TRANSACTION_SUM_COMPARE
+            - TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW
+    RuleSet:
+      type: object
+      description: Набор правил для рекомендации банковского продукта, свойства которого указаны в product_*
+      properties:
+        id:
+          type: string
+          format: uuid
+        product_id:
+          type: object
+          format: uuid
+        product_name:
+          type: object
+        product_text:
+          type: object
+        rule:
+          type: array
+          description: Массив правил. Проверка объединяется логическим И
+          items:
+            $ref: '#/components/schemas/Rule'
+      required:
+        - rule
+    RuleStat:
+      type: object
+      description: Статистика успешного применения правил для выдачи рекомендаций
+      properties:
+        rule_id:
+          type: string
+          format: uuid
+        count:
+          type: integer
+          format: int32
+    RuleStatReturn:
+      type: object
+      properties:
+        stats:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuleStat'
+    Recommendation:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        recommendations:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecommendedProduct'
+    Info:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
