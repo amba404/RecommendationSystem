@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class RuleStatServiceImpl implements RuleStatService{
+public class RuleStatServiceImpl implements RuleStatService {
 
     private final RuleStatRepository ruleStatRepository;
 

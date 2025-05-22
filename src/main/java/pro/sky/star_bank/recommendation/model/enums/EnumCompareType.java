@@ -18,17 +18,17 @@ public enum EnumCompareType {
 
     private final String value;
 
-    @JsonValue
-    public String getValue() {
-        return value;
-    }
-
     @JsonCreator
     public static EnumCompareType fromString(@NotEmpty String code) {
         return Arrays.stream(EnumCompareType.values())
                 .filter(type -> type.value.equals(code))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Нераспознанный код: " + code));
+    }
+
+    @JsonValue
+    public String getValue() {
+        return value;
     }
 
     @Override

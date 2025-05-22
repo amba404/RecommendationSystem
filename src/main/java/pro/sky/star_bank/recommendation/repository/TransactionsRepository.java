@@ -33,6 +33,7 @@ public class TransactionsRepository {
 
     /**
      * Возвращает случайную транзакцию пользователя
+     *
      * @param user идентификатор пользователя
      * @return Сумма операции по случайной транзакции пользователя
      */
@@ -44,8 +45,10 @@ public class TransactionsRepository {
         return result != null ? result : 0;
     }
 
-    /**           Устарело
+    /**
+     * Устарело
      * Возвращает список рекомендаций для пользователя
+     *
      * @param userId идентификатор пользователя
      * @return список ID рекомендаций
      */
@@ -143,6 +146,7 @@ public class TransactionsRepository {
 
     /**
      * Проверяет выполнение правила, заданного текстом SQL
+     *
      * @param userId идентификатор пользователя
      * @return True | false, или Null
      */
@@ -152,6 +156,7 @@ public class TransactionsRepository {
 
     /**
      * Проверяет выполнение правил рекомендации фиксированного продукта Invest500
+     *
      * @param userId идентификатор пользователя
      * @return True | false, или Null
      */
@@ -195,6 +200,7 @@ public class TransactionsRepository {
 
     /**
      * Проверяет выполнение правил рекомендации фиксированного продукта TopSaving
+     *
      * @param userId идентификатор пользователя
      * @return True | false, или Null
      */
@@ -254,6 +260,7 @@ public class TransactionsRepository {
 
     /**
      * Проверяет выполнение правил рекомендации фиксированного продукта SimpleCredit
+     *
      * @param userId идентификатор пользователя
      * @return True | false, или Null
      */
@@ -298,9 +305,10 @@ public class TransactionsRepository {
 
     /**
      * Проверяет выполнение динамического правила "Используется продукт с типом PRODUCT_TYPE заданное количество раз"
-     * @param userId id пользователя
+     *
+     * @param userId      id пользователя
      * @param productType тип продукта
-     * @param count количество раз
+     * @param count       количество раз
      * @return True | false, или Null
      */
     @Cacheable(value = "UserOf", key = "{#userId, #productType, #count}")
@@ -328,11 +336,12 @@ public class TransactionsRepository {
 
     /**
      * Проверяет выполнение динамического правила "Сумма операций по продукту PRODUCT_TYPE > VALUE"
-     * @param userId id пользователя
-     * @param productType тип продукта
+     *
+     * @param userId          id пользователя
+     * @param productType     тип продукта
      * @param transactionType тип операции
-     * @param comparator операция сравнения
-     * @param comparedValue сравниваемое значение
+     * @param comparator      операция сравнения
+     * @param comparedValue   сравниваемое значение
      * @return True | false, или Null
      */
     @Cacheable(value = "TransactionSumCompare", key = "{#userId, #productType, #transactionType, #comparator, #comparedValue}")
@@ -363,9 +372,10 @@ public class TransactionsRepository {
 
     /**
      * Проверяет выполнение динамического правила "Сумма пополнения и снятия средств по продукту PRODUCT_TYPE сравнивается заданным способом"
-     * @param userId id пользователя
+     *
+     * @param userId      id пользователя
      * @param productType тип продукта
-     * @param comparator операция сравнения
+     * @param comparator  операция сравнения
      * @return True | false, или Null
      */
     @Cacheable(value = "TransactionSumCompareDepositWithdraw", key = "{#userId, #productType, #comparator}")

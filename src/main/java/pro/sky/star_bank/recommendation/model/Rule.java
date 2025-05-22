@@ -24,34 +24,21 @@ public class Rule {
 
     public static int CNT_USER_OF = 1;
     public static int CNT_ACTIVE_USER_OF = 5;
-
-    public enum EnumQueryType {
-        USER_OF,
-        ACTIVE_USER_OF,
-        TRANSACTION_SUM_COMPARE,
-        TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW
-    }
-
     @JsonProperty("query")
     @Enumerated(EnumType.STRING)
     private EnumQueryType queryType;
-
     @JsonIgnore
     @Enumerated(EnumType.STRING)
     private EnumProductType productType;
-
     @JsonIgnore
     @Enumerated(EnumType.STRING)
     private EnumTransactionType transactionType;
-
     @JsonIgnore
     @Enumerated(EnumType.STRING)
     private EnumCompareType compareType;
-
     @JsonIgnore
     @Min(0)
     private Integer compareValue;
-
     private boolean negate;
 
     private void trySetArguments(String @NotNull [] arguments) {
@@ -161,6 +148,13 @@ public class Rule {
         if (productType == null) {
             throw new IllegalArgumentException("Product type must be specified");
         }
+    }
+
+    public enum EnumQueryType {
+        USER_OF,
+        ACTIVE_USER_OF,
+        TRANSACTION_SUM_COMPARE,
+        TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW
     }
 
 }

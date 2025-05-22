@@ -55,8 +55,7 @@ public class RuleServiceImpl implements RuleService {
      */
     public boolean checkForUser(@NotNull UUID userId, @NotNull Rule rule) {
         Optional<Boolean> result = switch (rule.getQueryType()) {
-            case USER_OF ->
-                    transactionsRepository.checkRuleUserOf(userId, rule.getProductType(), Rule.CNT_USER_OF);
+            case USER_OF -> transactionsRepository.checkRuleUserOf(userId, rule.getProductType(), Rule.CNT_USER_OF);
             case ACTIVE_USER_OF ->
                     transactionsRepository.checkRuleUserOf(userId, rule.getProductType(), Rule.CNT_ACTIVE_USER_OF);
             case TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW ->

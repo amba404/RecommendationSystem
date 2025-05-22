@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TgBotServiceImpl implements TgBotService{
+public class TgBotServiceImpl implements TgBotService {
 
     private final TransactionsRepository transactionsRepository;
     private final RecommendationService recommendationService;
