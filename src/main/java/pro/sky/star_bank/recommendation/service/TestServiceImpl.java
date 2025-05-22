@@ -21,7 +21,7 @@ public class TestServiceImpl implements TestService {
     /**
      * Получить сумму случайной транзакции для указанного пользователя
      *
-     * @param userId
+     * @param userId идентификатор пользователя
      * @return Integer
      */
     @Override

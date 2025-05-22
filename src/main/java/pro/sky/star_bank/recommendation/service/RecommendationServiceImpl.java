@@ -26,7 +26,7 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     /**
      * Получить рекомендации для пользователя
-     * @param userId
+     * @param userId Идентификатор пользователя
      * @return List<RecommendedProduct>
      */
     @Override

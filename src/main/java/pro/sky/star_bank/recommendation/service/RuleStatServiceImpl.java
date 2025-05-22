@@ -30,7 +30,7 @@ public class RuleStatServiceImpl implements RuleStatService {
     /**
      * Увеличить счетчик успешного срабатывания правила на 1
      *
-     * @param id
+     * @param id идентификатор правила
      */
     @Override
     public void incrementCount(UUID id) {
