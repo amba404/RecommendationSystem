@@ -1,5 +1,7 @@
 package pro.sky.star_bank.recommendation.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import pro.sky.star_bank.recommendation.service.ManagementService;
  * <li>Очищает кэши запросов к БД транзакций</li>
  * </ul>
  */
+@Tag(name = "Management Controller", description = "Контроллер служебного функционала")
 @RestController
 @RequestMapping(value = "/management")
 @RequiredArgsConstructor
@@ -25,11 +28,13 @@ public class ManagementController {
 
     @PostMapping("/clear-caches")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @Operation(summary = "Очистка кэшей", description = "Очищает все кэши запросов к БД транзакций")
     public void clearCache() {
         managementService.clearCaches();
     }
 
     @GetMapping("/info")
+    @Operation(description = "Предоставляет информацию о сервисе", summary = "Информация о сервисе")
     public Info getInfo() {
         return new Info(buildProperties.getName(), buildProperties.getVersion());
     }

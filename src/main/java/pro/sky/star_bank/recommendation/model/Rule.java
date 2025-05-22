@@ -2,6 +2,7 @@ package pro.sky.star_bank.recommendation.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Min;
@@ -24,12 +25,14 @@ import java.util.List;
 @Setter
 @ToString
 @EqualsAndHashCode
+@Schema(description = "Сущность правила. Входит в набор правил для рекомендаций.")
 public class Rule {
 
     public static int CNT_USER_OF = 1;
     public static int CNT_ACTIVE_USER_OF = 5;
     @JsonProperty("query")
     @Enumerated(EnumType.STRING)
+    @Schema(description = "Тип запроса правила")
     private EnumQueryType queryType;
     @JsonIgnore
     @Enumerated(EnumType.STRING)
@@ -43,6 +46,7 @@ public class Rule {
     @JsonIgnore
     @Min(0)
     private Integer compareValue;
+    @Schema(description = "Флаг отрицания правила. Результат инвертируется")
     private boolean negate;
 
     private void trySetArguments(String @NotNull [] arguments) {
@@ -86,6 +90,8 @@ public class Rule {
      *
      * @return List<String>
      */
+    @Schema(description ="Список аргументов правила. В зависимости от типа правила, количество аргументов может отличаться. От 1 до 4 аргументов (ТипПродукта|ТипТранзакции|СпособСравнения|Значение), заданных строкой",
+            allowableValues = {"DEBIT|CREDIT", "DEPOSIT|WITHDRAW", ">|<|>=|<=|=", "Integer(>=0)"})
     public List<String> getArguments() {
         List<String> arguments = new ArrayList<>();
 

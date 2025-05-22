@@ -3,6 +3,7 @@ package pro.sky.star_bank.recommendation.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -24,6 +25,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Schema(description = "Набор правил для рекомендации банковского продукта, свойства которого указаны в product_*")
 public class RuleSet {
 
     @Id
@@ -41,6 +43,7 @@ public class RuleSet {
     @Column(name = "rule", columnDefinition = "jsonb")
     @JsonProperty("rule")
     @NotNull
+    @Schema(description = "Массив правил. Проверка объединяется логическим И")
     private List<Rule> rules;
 
     public void assertValid() {

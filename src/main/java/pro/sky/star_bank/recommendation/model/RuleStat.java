@@ -2,6 +2,7 @@ package pro.sky.star_bank.recommendation.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Schema(description = "Статистика успешного применения правил для выдачи рекомендаций")
 public class RuleStat {
 
     @EqualsAndHashCode.Include
