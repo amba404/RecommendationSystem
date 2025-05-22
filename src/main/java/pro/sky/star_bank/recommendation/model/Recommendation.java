@@ -6,6 +6,9 @@ import lombok.*;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Модель данных для возврата рекомендаций сервисом рекомендаций
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

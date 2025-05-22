@@ -6,6 +6,12 @@ import pro.sky.star_bank.recommendation.service.RecommendationRuleSet;
 
 import java.util.UUID;
 
+/**
+ * Рекомендованный продукт с фиксированным правилом рекомендации "Простой кредит"
+ * <p>
+ * Устарело. Может быть заменено динамическими правилами рекомендаций
+ */
+
 @Component
 public class RecommendedProductSimpleCredit extends RecommendedProduct implements RecommendationRuleSet {
 

@@ -11,6 +11,14 @@ import pro.sky.star_bank.recommendation.service.RuleStatService;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Контроллер сервиса для работы с динамическими правилами рекомендаций
+ * <ul>
+ *     <li>Создание правила</li>
+ *     <li>Удаление правила</li>
+ *     <li>Получение статистики срабатывания по правилам</li>
+ * </ul>
+ */
 @RestController
 @RequestMapping("/rule")
 @RequiredArgsConstructor

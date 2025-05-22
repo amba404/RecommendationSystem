@@ -6,6 +6,11 @@ import pro.sky.star_bank.recommendation.service.RecommendationRuleSet;
 
 import java.util.UUID;
 
+/**
+ * Рекомендованный продукт с фиксированным правилом рекомендации Invest500
+ * <p>
+ * Устарело. Может быть заменено динамическими правилами рекомендаций
+ */
 @Component
 public class RecommendedProductInvest500 extends RecommendedProduct implements RecommendationRuleSet {
 

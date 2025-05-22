@@ -9,6 +9,9 @@ import pro.sky.star_bank.recommendation.service.TestServiceImpl;
 
 import java.util.UUID;
 
+/**
+ * Контроллер для тестирования правильности подключения к БД транзакций клиентов
+ */
 @RestController
 @RequestMapping("/test")
 public class TestController {

@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.util.UUID;
 
+/**
+ * Класс отображения данных пользователя банковских продуктов
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

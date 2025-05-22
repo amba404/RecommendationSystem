@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Репозиторий для получения данных по транзакциям: проверка выполнения правил рекомендации
+ */
 @Repository
 public class TransactionsRepository {
 

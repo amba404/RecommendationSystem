@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import java.util.Arrays;
 
 @AllArgsConstructor
-//@Getter
 public enum EnumCompareType {
     GT(">"),
     LT("<"),

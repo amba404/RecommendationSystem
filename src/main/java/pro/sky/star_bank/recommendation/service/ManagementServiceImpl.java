@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
+/**
+ * Сервис служебных операций
+ */
 @Service
 @EnableCaching
 @RequiredArgsConstructor
@@ -14,6 +17,9 @@ public class ManagementServiceImpl implements ManagementService {
 
     private final CacheManager cacheManager;
 
+    /**
+     * Очистка кэшей запросов к БД транзакций
+     */
     @Override
     public void clearCaches() {
         cacheManager.getCacheNames()

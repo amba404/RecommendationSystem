@@ -6,6 +6,11 @@ import pro.sky.star_bank.recommendation.service.RecommendationRuleSet;
 
 import java.util.UUID;
 
+/**
+ * Рекомендованный продукт с фиксированным правилом рекомендации "Top Saving"
+ * <p>
+ * Устарело. Может быть заменено динамическими правилами рекомендаций
+ */
 @Component
 public class RecommendedProductTopSaving extends RecommendedProduct implements RecommendationRuleSet {
 

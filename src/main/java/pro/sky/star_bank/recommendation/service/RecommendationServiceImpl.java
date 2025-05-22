@@ -7,6 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Сервис для получения рекомендаций банковских продуктов.
+ * Основан на наборах динамических правил.
+ * Сохранена выдача фиксированных правил рекомендаций
+ */
 @Service
 public class RecommendationServiceImpl implements RecommendationService {
 
@@ -19,6 +24,11 @@ public class RecommendationServiceImpl implements RecommendationService {
         this.recommendationsFix = recommendationsFix;
     }
 
+    /**
+     * Получить рекомендации для пользователя
+     * @param userId
+     * @return List<RecommendedProduct>
+     */
     @Override
     public List<RecommendedProduct> getRecommendations(UUID userId) {
 

@@ -13,6 +13,10 @@ import pro.sky.star_bank.recommendation.service.TgBotService;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
+/**
+ * Контроллер для Telegram Bot, выдает рекомендованные банковские продукты по запросу
+ * для указанного с помощью NikName пользователя
+ */
 @Service
 @RequiredArgsConstructor
 public class TgBotUpdatesListener implements UpdatesListener {

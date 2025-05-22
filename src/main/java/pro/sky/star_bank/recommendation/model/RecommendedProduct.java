@@ -9,6 +9,9 @@ import pro.sky.star_bank.recommendation.service.RecommendationRuleSet;
 
 import java.util.UUID;
 
+/**
+ * Модель данных для рекомендуемого продукта, с проверкой применимости рекомендации к заданному пользователю
+ */
 @Entity
 @Table(name = "recommended_products")
 @AllArgsConstructor

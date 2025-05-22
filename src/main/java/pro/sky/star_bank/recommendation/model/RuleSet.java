@@ -13,6 +13,9 @@ import org.hibernate.type.SqlTypes;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Класс описывает набор правил для рекомендации банковского продукта. Правила в наборе объединяются логическим И
+ */
 @Entity
 @Table(name = "rule_set")
 @AllArgsConstructor

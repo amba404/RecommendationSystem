@@ -9,6 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+/**
+ * Сервис отправки сообщения в Telegram Bot
+ */
 @Service
 public class TgBotMessageSenderImpl implements TgBotMessageSender {
     private final Logger logger = LoggerFactory.getLogger(TgBotMessageSenderImpl.class);

@@ -14,6 +14,10 @@ import pro.sky.star_bank.recommendation.model.enums.EnumTransactionType;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс описания составных частей набора динамических правил для рекомендаций.
+ * Правила в наборе проверяются на применимость и объединяются логическим И
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -77,6 +81,11 @@ public class Rule {
         }
     }
 
+    /**
+     * Метод для сериализации в JSON
+     *
+     * @return List<String>
+     */
     public List<String> getArguments() {
         List<String> arguments = new ArrayList<>();
 
@@ -116,6 +125,9 @@ public class Rule {
         return arguments;
     }
 
+    /**
+     * Метод для десериализации из JSON
+     */
     public void setArguments(String[] arguments) {
 
         if (queryType == null) {
@@ -150,10 +162,17 @@ public class Rule {
         }
     }
 
+    /**
+     * Типы правил
+     */
     public enum EnumQueryType {
+        // Пользователь заданного типа банковского продукта
         USER_OF,
+        // Активный пользователь заданного типа банковского продукта
         ACTIVE_USER_OF,
+        // Сравнение суммы оборота по заданному типу банковских продкутов
         TRANSACTION_SUM_COMPARE,
+        // Сравнение суммы пополнения и снятия средств по транзакциям заданного типа банковских продкутов
         TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW
     }
 

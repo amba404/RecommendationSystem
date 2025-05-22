@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Сервис для работы с динамическими правилами рекомендации
+ */
 @Service
 @RequiredArgsConstructor
 public class RuleServiceImpl implements RuleService {
@@ -67,6 +70,12 @@ public class RuleServiceImpl implements RuleService {
     }
 
 
+    /**
+     * Добавляет набор правил рекомендации. Проверяет добавляемый набор на валидность. Добавляет/обновляет информацию по рекомендуемому продукту.
+     *
+     * @param ruleSet
+     * @return ruleSet
+     */
     @Override
     public RuleSet addRuleSet(RuleSet ruleSet) {
         ruleSet.assertValid();
