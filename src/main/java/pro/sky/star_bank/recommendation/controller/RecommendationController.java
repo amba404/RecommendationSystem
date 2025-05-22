@@ -9,6 +9,9 @@ import pro.sky.star_bank.recommendation.service.RecommendationService;
 
 import java.util.UUID;
 
+/**
+ * Контроллер сервиса рекомендаций. Выдает рекомендованные банковские продукты для заданного пользователя
+ */
 @RestController
 @RequestMapping("/recommendation")
 public class RecommendationController {

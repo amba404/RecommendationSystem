@@ -5,6 +5,9 @@ import pro.sky.star_bank.recommendation.repository.TransactionsRepository;
 
 import java.util.UUID;
 
+/**
+ * Простой сервис для тестирования корректности подключения БД транзакций
+ */
 @Service
 public class TestServiceImpl implements TestService {
 
@@ -15,6 +18,12 @@ public class TestServiceImpl implements TestService {
     }
 
 
+    /**
+     * Получить сумму случайной транзакции для указанного пользователя
+     *
+     * @param userId идентификатор пользователя
+     * @return Integer
+     */
     @Override
     public Integer getAmount(UUID userId) {
         return repository.getRandomTransactionAmount(userId);

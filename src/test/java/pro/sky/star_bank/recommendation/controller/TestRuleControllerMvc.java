@@ -30,23 +30,7 @@ import java.util.UUID;
 @ExtendWith(MockitoExtension.class)
 class TestRuleControllerMvc {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockitoBean
-    RuleSetRepository rulesetRepository;
-
-    @MockitoBean
-    RuleStatRepository ruleStatRepository;
-
-    @MockitoBean
-    RecommendedProductRepository productRepository;
-
-    @MockitoBean
-    TransactionsRepository transactionsRepository;
-
     private final static UUID UUID_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
-
     private final static String jsonRequest = """
             {
                 "product_name": "Название продукта",
@@ -62,10 +46,19 @@ class TestRuleControllerMvc {
                 ]
             }
             """;
-
     private static RuleSet ruleSet;
     private static JSONObject jsonObject;
     private static RuleStat ruleStat;
+    @MockitoBean
+    RuleSetRepository rulesetRepository;
+    @MockitoBean
+    RuleStatRepository ruleStatRepository;
+    @MockitoBean
+    RecommendedProductRepository productRepository;
+    @MockitoBean
+    TransactionsRepository transactionsRepository;
+    @Autowired
+    private MockMvc mockMvc;
 
     @BeforeAll
     static void init() throws Exception {
@@ -100,7 +93,7 @@ class TestRuleControllerMvc {
     }
 
     @Test
-    void getAllRuleSets() throws Exception{
+    void getAllRuleSets() throws Exception {
         Mockito.when(rulesetRepository.findAll()).thenReturn(List.of(ruleSet));
 
         mockMvc.perform(MockMvcRequestBuilders

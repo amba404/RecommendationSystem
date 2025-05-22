@@ -13,7 +13,7 @@ import java.util.UUID;
 class RuleSetTest {
 
     @Test
-    public void testRuleSetJson()  throws Exception {
+    public void testRuleSetJson() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
 
         String json = """

@@ -8,6 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.star_bank.recommendation.service.ManagementService;
 
+/**
+ * Контроллер сервиса служебного функционала.
+ * <ul>
+ * <li>Предоставляет информацию о сервисе</li>
+ * <li>Очищает кэши запросов к БД транзакций</li>
+ * </ul>
+ */
 @RestController
 @RequestMapping(value = "/management")
 @RequiredArgsConstructor

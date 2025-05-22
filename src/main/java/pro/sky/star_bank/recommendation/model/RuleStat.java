@@ -7,7 +7,9 @@ import lombok.*;
 
 import java.util.UUID;
 
-
+/**
+ * Класс для хранения статистики успешного применения правил для выдачи рекомендаций
+ */
 @Entity
 @Table(name = "rule_stat")
 @AllArgsConstructor
