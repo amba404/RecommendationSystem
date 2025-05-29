@@ -1,0 +1,40 @@
+@startuml
+left to right direction
+
+actor "Пользователь" as u
+actor "Менеджер" as m
+actor "Система" as s
+rectangle "Сервис рекомендаций" {
+package "Управление Сервисом" {
+usecase "Получить инфо"  as getInfo
+usecase "Очистить кэши"  as clearCaches
+}
+
+package "Управление\nНаборами динамических правил\nдля рекомендации" {
+usecase "Получить все Наборы" as getAllDRuleSets
+usecase "Добавить Набор" as addDRuleSet
+usecase "Удалить Набор" as delDRuleSet
+usecase "Получить статистику" as getStatDRuleSets
+}
+
+
+usecase "Получить рекомендацию" as getRecom
+}
+
+package "TG_Bot" {
+usecase "Получить рекомендацию" as TgGetRecom
+}
+
+
+s --> getInfo
+s --> clearCaches
+
+m --> addDRuleSet
+m --> delDRuleSet
+m --> getAllDRuleSets
+m --> getStatDRuleSets
+
+u --> getRecom
+u --> TgGetRecom
+TgGetRecom ..> getRecom
+@enduml
