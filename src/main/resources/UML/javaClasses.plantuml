@@ -1,0 +1,375 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+enum EnumCompareType << enumeration >> {
+  + LT: 
+  + EQ: 
+  + LE: 
+  + GT: 
+  + GE: 
+  - value: String
+  + valueOf(String): EnumCompareType
+  + fromString(String): EnumCompareType
+  + getValue(): String
+  + values(): EnumCompareType[]
+  + toString(): String
+}
+enum EnumProductType << enumeration >> {
+  + INVEST: 
+  + DEBIT: 
+  + SAVING: 
+  + CREDIT: 
+  - value: String
+  + getValue(): String
+  + valueOf(String): EnumProductType
+  + toString(): String
+  + values(): EnumProductType[]
+}
+enum EnumQueryType << enumeration >> {
+  + TRANSACTION_SUM_COMPARE: 
+  + USER_OF: 
+  + ACTIVE_USER_OF: 
+  + TRANSACTION_SUM_COMPARE_DEPOSIT_WITHDRAW: 
+  + values(): EnumQueryType[]
+  + valueOf(String): EnumQueryType
+}
+enum EnumTransactionType << enumeration >> {
+  + WITHDRAW: 
+  + DEPOSIT: 
+  - value: String
+  + valueOf(String): EnumTransactionType
+  + getValue(): String
+  + toString(): String
+  + values(): EnumTransactionType[]
+}
+class Info {
+  - name: String
+  - version: String
+  + getName(): String
+  + getVersion(): String
+}
+class ManagementController {
+  - buildProperties: BuildProperties
+  - managementService: ManagementService
+  + clearCache(): void
+  + getInfo(): Info
+}
+interface ManagementService << interface >> {
+  + clearCaches(): void
+}
+class ManagementServiceImpl {
+  - cacheManager: CacheManager
+  + clearCaches(): void
+}
+class Recommendation {
+  - recommendedProducts: List<RecommendedProduct>
+  - userId: UUID
+  + equals(Object): boolean
+  + hashCode(): int
+  + getUserId(): UUID
+  + getRecommendedProducts(): List<RecommendedProduct>
+  + setUserId(UUID): void
+  + setRecommendedProducts(List<RecommendedProduct>): void
+  + toString(): String
+  # canEqual(Object): boolean
+}
+class RecommendationController {
+  - recommendationService: RecommendationService
+  + getRecommendation(UUID): Recommendation
+}
+class RecommendationDataSourceConfiguration {
+  + recommendationTransactionManager(LocalContainerEntityManagerFactoryBean): PlatformTransactionManager
+  + recommendationDataSourceProperties(): DataSourceProperties
+  + recommendationDataSource(): DataSource
+  + recommendationEntityManagerFactory(DataSource, EntityManagerFactoryBuilder): LocalContainerEntityManagerFactoryBean
+  + recommendationJdbcTemplate(DataSource): JdbcTemplate
+}
+interface RecommendationRuleSet << interface >> {
+  + checkForUser(UUID): boolean
+}
+interface RecommendationService << interface >> {
+  + getRecommendations(UUID): List<RecommendedProduct>
+}
+class RecommendationServiceImpl {
+  - ruleService: RuleService
+  - recommendationsFix: List<RecommendationRuleSet>
+  + getRecommendations(UUID): List<RecommendedProduct>
+}
+class RecommendationSystemApplication {
+  + main(String[]): void
+}
+class RecommendedProduct {
+  - name: String
+  - id: UUID
+  - text: String
+  + equals(Object): boolean
+  + toString(): String
+  + hashCode(): int
+  + getId(): UUID
+  + getName(): String
+  + getText(): String
+  + setId(UUID): void
+  + setName(String): void
+  + setText(String): void
+  + checkForUser(UUID): boolean
+  # canEqual(Object): boolean
+}
+class RecommendedProductInvest500 {
+  - transactionsRepository: TransactionsRepository
+  + checkForUser(UUID): boolean
+}
+interface RecommendedProductRepository << interface >>
+class RecommendedProductSimpleCredit {
+  - transactionsRepository: TransactionsRepository
+  + checkForUser(UUID): boolean
+}
+class RecommendedProductTopSaving {
+  - transactionsRepository: TransactionsRepository
+  + checkForUser(UUID): boolean
+}
+class Rule {
+  + CNT_ACTIVE_USER_OF: int
+  + CNT_USER_OF: int
+  - transactionType: EnumTransactionType
+  - compareValue: Integer
+  - queryType: EnumQueryType
+  - negate: boolean
+  - productType: EnumProductType
+  - compareType: EnumCompareType
+  + isNegate(): boolean
+  + equals(Object): boolean
+  + toString(): String
+  + setTransactionType(EnumTransactionType): void
+  + setCompareValue(Integer): void
+  + hashCode(): int
+  + setCompareType(EnumCompareType): void
+  + getQueryType(): EnumQueryType
+  + getProductType(): EnumProductType
+  + getTransactionType(): EnumTransactionType
+  + getCompareType(): EnumCompareType
+  + setQueryType(EnumQueryType): void
+  + getCompareValue(): Integer
+  + setProductType(EnumProductType): void
+  + setNegate(boolean): void
+  + setArguments(String[]): void
+  + assertValid(): void
+  + getArguments(): List<String>
+  # canEqual(Object): boolean
+  - trySetArguments(String[]): void
+}
+class RuleController {
+  - ruleService: RuleService
+  - ruleStatService: RuleStatService
+  + getStats(): RuleStatReturn
+  + deleteRuleSet(UUID): void
+  + getAllRuleSets(): List<RuleSet>
+  + createRule(RuleSet): RuleSet
+}
+interface RuleService << interface >> {
+  + findAll(): List<RuleSet>
+  + checkForUser(UUID, RuleSet): boolean
+  + addRuleSet(RuleSet): RuleSet
+  + deleteRuleSet(UUID): void
+}
+class RuleServiceImpl {
+  - rulesetRepository: RuleSetRepository
+  - productRepository: RecommendedProductRepository
+  - ruleStatService: RuleStatService
+  - transactionsRepository: TransactionsRepository
+  + checkForUser(UUID, RuleSet): boolean
+  + addRuleSet(RuleSet): RuleSet
+  + checkForUser(UUID, Rule): boolean
+  + findAll(): List<RuleSet>
+  + deleteRuleSet(UUID): void
+}
+class RuleSet {
+  - rules: List<Rule>
+  - id: UUID
+  - product: RecommendedProduct
+  + getRules(): List<Rule>
+  + equals(Object): boolean
+  + hashCode(): int
+  + getId(): UUID
+  + getProduct(): RecommendedProduct
+  + setId(UUID): void
+  + setProduct(RecommendedProduct): void
+  + toString(): String
+  + setRules(List<Rule>): void
+  + assertValid(): void
+  # canEqual(Object): boolean
+}
+interface RuleSetRepository << interface >>
+class RuleStat {
+  - rule: RuleSet
+  - id: UUID
+  - rulesetCount: int
+  + equals(Object): boolean
+  + toString(): String
+  + hashCode(): int
+  + getId(): UUID
+  + getRule(): RuleSet
+  + getRulesetCount(): int
+  + setId(UUID): void
+  + setRule(RuleSet): void
+  + setRulesetCount(int): void
+  # canEqual(Object): boolean
+}
+interface RuleStatRepository << interface >> {
+  + incrementCount(UUID): void
+  + findAll(): List<RuleStat>
+}
+class RuleStatReturn {
+  - stats: List<RuleStat>
+  + getStats(): List<RuleStat>
+  + setStats(List<RuleStat>): void
+}
+interface RuleStatService << interface >> {
+  + findAll(): List<RuleStat>
+  + incrementCount(UUID): void
+}
+class RuleStatServiceImpl {
+  - ruleStatRepository: RuleStatRepository
+  + findAll(): List<RuleStat>
+  + incrementCount(UUID): void
+}
+class StringToEnumCompareTypeConverter {
+  + convert(String): EnumCompareType?
+}
+class TestController {
+  - service: TestService
+  + index(): String
+  + getAmount(UUID): Integer
+}
+interface TestService << interface >> {
+  + getAmount(UUID): Integer
+}
+class TestServiceImpl {
+  - repository: TransactionsRepository
+  + getAmount(UUID): Integer
+}
+class TgBotConfiguration {
+  - token: String
+  + telegramBot(): TelegramBot
+}
+interface TgBotMessageSender << interface >> {
+  + sendMessage(Long, String): boolean
+}
+class TgBotMessageSenderImpl {
+  - bot: TelegramBot
+  - logger: Logger
+  + sendMessage(Long, String): boolean
+}
+interface TgBotService << interface >> {
+  + recommendation(String): String
+  + hello(): String
+}
+class TgBotServiceImpl {
+  - transactionsRepository: TransactionsRepository
+  - recommendationService: RecommendationService
+  + hello(): String
+  + recommendation(String): String
+}
+class TgBotUpdatesListener {
+  - bot: TelegramBot
+  - tgBotService: TgBotService
+  - messageSender: TgBotMessageSender
+  + process(List<Update>): int
+  + init(): void
+  ~ processUpdate(Update): void
+}
+class TransactionsDataSourceConfiguration {
+  + caffeineConfig(): Caffeine
+  + transactionsDataSource(String): DataSource
+  + transactionsJdbcTemplate(DataSource): JdbcTemplate
+}
+class TransactionsRepository {
+  - logger: Logger
+  - jdbcTemplate: JdbcTemplate
+  + checkRuleTransactionSumCompare(UUID, EnumProductType, EnumTransactionType, EnumCompareType, int): Optional<Boolean>
+  + checkForUserInvest500(UUID): boolean
+  + getUserByUserName(String): Optional<TransactionsUser>
+  + checkForUserSimpleCredit(UUID): boolean
+  + checkForUserTopSaving(UUID): boolean
+  + getRecommendations(UUID): List<UUID>
+  + checkRuleUserOf(UUID, EnumProductType, int): Optional<Boolean>
+  + getRandomTransactionAmount(UUID): int
+  + checkRuleTransactionSumCompareDepositWithdraw(UUID, EnumProductType, EnumCompareType): Optional<Boolean>
+  - checkTextRule(String, UUID): Optional<Boolean>
+}
+class TransactionsUser {
+  - firstName: String
+  - userName: String
+  - id: UUID
+  - lastName: String
+  + equals(Object): boolean
+  + hashCode(): int
+  + toString(): String
+  + getId(): UUID
+  + getFirstName(): String
+  + getLastName(): String
+  + getUserName(): String
+  + setUserName(String): void
+  + setId(UUID): void
+  + setFirstName(String): void
+  + setLastName(String): void
+  # canEqual(Object): boolean
+}
+class WebConfig {
+  + addFormatters(FormatterRegistry): void
+}
+
+EnumQueryType                          +-[#820000,plain]-  Rule                                  
+Info                                   +-[#820000,plain]-  ManagementController                  
+ManagementController                   -[#595959,dashed]->  Info                                  : "«create»"
+ManagementController                  "1" *-[#595959,plain]-> "managementService\n1" ManagementService                     
+ManagementServiceImpl                  -[#008200,dashed]-^  ManagementService                     
+Recommendation                        "1" *-[#595959,plain]-> "recommendedProducts\n*" RecommendedProduct                    
+RecommendationController               -[#595959,dashed]->  Recommendation                        : "«create»"
+RecommendationController              "1" *-[#595959,plain]-> "recommendationService\n1" RecommendationService                 
+RecommendationServiceImpl             "1" *-[#595959,plain]-> "recommendationsFix\n*" RecommendationRuleSet                 
+RecommendationServiceImpl              -[#008200,dashed]-^  RecommendationService                 
+RecommendationServiceImpl             "1" *-[#595959,plain]-> "ruleService\n1" RuleService                           
+RecommendedProduct                     -[#008200,dashed]-^  RecommendationRuleSet                 
+RecommendedProductInvest500            -[#008200,dashed]-^  RecommendationRuleSet                 
+RecommendedProductInvest500            -[#000082,plain]-^  RecommendedProduct                    
+RecommendedProductInvest500           "1" *-[#595959,plain]-> "transactionsRepository\n1" TransactionsRepository                
+RecommendedProductSimpleCredit         -[#008200,dashed]-^  RecommendationRuleSet                 
+RecommendedProductSimpleCredit         -[#000082,plain]-^  RecommendedProduct                    
+RecommendedProductSimpleCredit        "1" *-[#595959,plain]-> "transactionsRepository\n1" TransactionsRepository                
+RecommendedProductTopSaving            -[#008200,dashed]-^  RecommendationRuleSet                 
+RecommendedProductTopSaving            -[#000082,plain]-^  RecommendedProduct                    
+RecommendedProductTopSaving           "1" *-[#595959,plain]-> "transactionsRepository\n1" TransactionsRepository                
+Rule                                  "1" *-[#595959,plain]-> "compareType\n1" EnumCompareType                       
+Rule                                  "1" *-[#595959,plain]-> "productType\n1" EnumProductType                       
+Rule                                  "1" *-[#595959,plain]-> "queryType\n1" EnumQueryType                         
+Rule                                  "1" *-[#595959,plain]-> "transactionType\n1" EnumTransactionType                   
+RuleController                        "1" *-[#595959,plain]-> "ruleService\n1" RuleService                           
+RuleController                         -[#595959,dashed]->  RuleStatReturn                        : "«create»"
+RuleController                        "1" *-[#595959,plain]-> "ruleStatService\n1" RuleStatService                       
+RuleServiceImpl                       "1" *-[#595959,plain]-> "productRepository\n1" RecommendedProductRepository          
+RuleServiceImpl                        -[#008200,dashed]-^  RuleService                           
+RuleServiceImpl                       "1" *-[#595959,plain]-> "rulesetRepository\n1" RuleSetRepository                     
+RuleServiceImpl                       "1" *-[#595959,plain]-> "ruleStatService\n1" RuleStatService                       
+RuleServiceImpl                       "1" *-[#595959,plain]-> "transactionsRepository\n1" TransactionsRepository                
+RuleSet                               "1" *-[#595959,plain]-> "product\n1" RecommendedProduct                    
+RuleSet                               "1" *-[#595959,plain]-> "rules\n*" Rule                                  
+RuleStat                              "1" *-[#595959,plain]-> "rule\n1" RuleSet                               
+RuleStatReturn                         +-[#820000,plain]-  RuleController                        
+RuleStatReturn                        "1" *-[#595959,plain]-> "stats\n*" RuleStat                              
+RuleStatServiceImpl                   "1" *-[#595959,plain]-> "ruleStatRepository\n1" RuleStatRepository                    
+RuleStatServiceImpl                    -[#008200,dashed]-^  RuleStatService                       
+TestController                        "1" *-[#595959,plain]-> "service\n1" TestService                           
+TestServiceImpl                        -[#008200,dashed]-^  TestService                           
+TestServiceImpl                       "1" *-[#595959,plain]-> "repository\n1" TransactionsRepository                
+TgBotMessageSenderImpl                 -[#008200,dashed]-^  TgBotMessageSender                    
+TgBotServiceImpl                      "1" *-[#595959,plain]-> "recommendationService\n1" RecommendationService                 
+TgBotServiceImpl                       -[#008200,dashed]-^  TgBotService                          
+TgBotServiceImpl                      "1" *-[#595959,plain]-> "transactionsRepository\n1" TransactionsRepository                
+TgBotUpdatesListener                  "1" *-[#595959,plain]-> "messageSender\n1" TgBotMessageSender                    
+TgBotUpdatesListener                  "1" *-[#595959,plain]-> "tgBotService\n1" TgBotService                          
+TransactionsRepository                 -[#595959,dashed]->  TransactionsUser                      : "«create»"
+WebConfig                              -[#595959,dashed]->  StringToEnumCompareTypeConverter      : "«create»"
+@enduml
