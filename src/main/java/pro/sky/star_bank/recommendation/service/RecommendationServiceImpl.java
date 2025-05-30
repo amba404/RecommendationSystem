@@ -34,15 +34,15 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         HashSet<RecommendedProduct> recommendations = new HashSet<>();
 
-        recommendationsFix.stream()
-                .parallel()
-                .filter(r -> r.checkForUser(userId))
-                .forEach(r -> recommendations.add((RecommendedProduct) r));
-
         ruleService.findAll().stream()
                 .parallel()
                 .filter(r -> ruleService.checkForUser(userId, r))
                 .forEach(r -> recommendations.add(r.getProduct()));
+
+        recommendationsFix.stream()
+                .filter(r -> (!recommendations.contains((RecommendedProduct) r)))
+                .filter(r -> r.checkForUser(userId))
+                .forEach(r -> recommendations.add((RecommendedProduct) r));
 
         return List.copyOf(recommendations);
     }
