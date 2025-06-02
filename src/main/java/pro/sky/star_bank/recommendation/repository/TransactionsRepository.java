@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -412,13 +411,13 @@ public class TransactionsRepository {
                         rs.getString("LAST_NAME"),
                         rs.getString("USERNAME"));
 
-        TransactionsUser user;
-        try {
-            user = jdbcTemplate.queryForObject("select * from users where username = ? limit 1",
-                    TransactionUserRowMapper,
-                    userName);
-        } catch (EmptyResultDataAccessException e) {
-            user = null;
+        TransactionsUser user = null;
+        List<TransactionsUser> userList = jdbcTemplate.query("select * from users where username = ? limit 2",
+                TransactionUserRowMapper,
+                userName);
+
+        if (userList.size() == 1) {
+            user = userList.get(0);
         }
         return Optional.ofNullable(user);
     }
