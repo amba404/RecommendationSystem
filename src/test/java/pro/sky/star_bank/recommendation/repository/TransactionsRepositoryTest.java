@@ -3,10 +3,12 @@ package pro.sky.star_bank.recommendation.repository;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.boot.test.context.SpringBootTest;
+import pro.sky.star_bank.recommendation.model.TransactionsUser;
 import pro.sky.star_bank.recommendation.model.enums.EnumCompareType;
 import pro.sky.star_bank.recommendation.model.enums.EnumProductType;
 import pro.sky.star_bank.recommendation.model.enums.EnumTransactionType;
@@ -90,5 +92,29 @@ class TransactionsRepositoryTest {
         repo.checkRuleUserOf(userId, productType, cnt);
 
 //        verify(repo, times(1)).checkRuleUserOf(userId, productType, negate, cnt);
+    }
+
+    @Test
+    void getUserByName_NotFound() {
+        TransactionsRepository repo = transactionsRepository;
+
+        TransactionsUser result = repo.getUserByUserName("!unknown!").orElse(null);
+
+        assertThat(result).isNull();
+    }
+
+    /**
+     * Данный тест выполняется, если в таблице transactions.users
+     * дублировать запись c username = "jordon.bergnaum".
+     * Проверено. Тест Ок
+     */
+    @Disabled
+    @Test
+    void getUserByName_MoreThanOne() {
+        TransactionsRepository repo = transactionsRepository;
+
+        TransactionsUser result = repo.getUserByUserName("jordon.bergnaum").orElse(null);
+
+        assertThat(result).isNull();
     }
 }
