@@ -129,6 +129,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -162,7 +163,6 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<finalName>${project.artifactId}</finalName>
 	</build>
 
 </project>
