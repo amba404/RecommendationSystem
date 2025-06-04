@@ -8,6 +8,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pro.sky.star.bank.recommendation.model.enums.EnumCompareType;
 import pro.sky.star.bank.recommendation.model.enums.EnumProductType;
 import pro.sky.star.bank.recommendation.model.enums.EnumTransactionType;
@@ -27,7 +29,7 @@ import java.util.List;
 @EqualsAndHashCode
 @Schema(description = "Сущность правила. Входит в набор правил для рекомендаций.")
 public class Rule {
-
+    private final Logger logger = LoggerFactory.getLogger(Rule.class);
     public static int CNT_USER_OF = 1;
     public static int CNT_ACTIVE_USER_OF = 5;
     @JsonProperty("query")
@@ -56,7 +58,7 @@ public class Rule {
                     this.productType = EnumProductType.valueOf(argument);
                     continue;
                 } catch (IllegalArgumentException e) {
-                    // Do nothing
+                    logger.warn("Не удалось распознать тип продукта: {}", argument);
                 }
             }
             if (transactionType == null) {
@@ -64,7 +66,7 @@ public class Rule {
                     this.transactionType = EnumTransactionType.valueOf(argument);
                     continue;
                 } catch (IllegalArgumentException e) {
-                    // Do nothing
+                    logger.warn("Не удалось распознать тип транзакции: {}", argument);
                 }
             }
             if (compareType == null) {
@@ -72,14 +74,14 @@ public class Rule {
                     this.compareType = EnumCompareType.fromString(argument);
                     continue;
                 } catch (Exception e) {
-                    // Do nothing
+                    logger.warn("Не удалось распознать способ сравнения: {}", argument);
                 }
             }
             if (compareValue == null) {
                 try {
                     this.compareValue = Integer.valueOf(argument);
                 } catch (NumberFormatException e) {
-                    // Do nothing
+                    logger.warn("Не удалось распознать значение для сравнения: {}", argument);
                 }
             }
         }
